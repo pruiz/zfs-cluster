@@ -195,7 +195,8 @@ Backing Store type to use for this LU. (stgt-specific).
 
 <special tag="rgmanager">
 <child type="iscsi-targets" forbid="1"/>
-<child type="iscsi-lun" start="1" stop="2"/>
+<child type="iscsi-lun" forbid="1"/>
+<child type="iscsi-luns" forbid="1"/>
 <child type="ip" start="2" stop="1"/>
 </special>
 
