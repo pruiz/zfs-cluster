@@ -49,8 +49,7 @@ get_next_lun() {
     declare dir=$1
 
     if [ -d "${dir}" -a ! -z "$(ls ${dir})" ]; then
-        declare file=$(ls ${dir}/LUN-*|sort -n|tail -n 1)
-        declare num=$(basename "${file}"|sed -e 's,^LUN-\([0-9]\+\).*,\1,g')
+        declare num=$(ls ${dir}/LUN-*|sed -e 's/^.*LUN-//'|sort -n|tail -n 1)
         if [ ! -z "${num}" ]; then
             echo $[$num+1] | tr -d ' '
             return;
@@ -110,6 +109,8 @@ add_lun() {
     declare tmpfile=$(mktemp /tmp/LUN-${lun}-XXXXX)
     declare uuid=$(uuidgen)
 
+    ocf_log debug "Using LUN: ${lun}"
+
     create_config "${tmpfile}" "${uuid}" "${target}" "${lun}" "${device}" \
         "${bstype}" "${vendor}" "${product}" "${scsiid}" "${scsisn}" "${extra}"
 
@@ -131,6 +132,7 @@ add_lun() {
     declare dir="${cdir}/${target}"
     cp "${tmpfile}" "${dir}/LUN-${lun}" || return $?
 
+    ocf_log info "Created LUN-${lun} with uuid: ${uuid}"
     echo "Created LUN with uuid: ${uuid}"
 
     return $OCF_SUCCESS
@@ -358,21 +360,21 @@ do
     i=$[$i+1]
 done
 
-dump_variables
+#dump_variables
 autodetect_engine
 
 case "$1" in
   add-lun) 
-    add_lun $*
+    add_lun $@
     ;;
   del-lun)
-    del_lun $*
+    del_lun $@
     ;;
   get-uuid)
-    get_uuid $*
+    get_uuid $@
     ;;
   get-lun)
-    get_lun $*
+    get_lun $@
     ;;
   *)
     ocf_log err "Invalid command: $COMMAND"
