@@ -196,7 +196,7 @@ iSCSILogicalUnits_monitor() {
 
     for file in ${dir}/*
     do \
-        scsi_lun_status "${file}" "${engine}" "${target}"; ret=$?
+        iscsi_lun_status "${file}" "${engine}" "${target}"; ret=$?
         [ $ret -ne $OCF_SUCCESS ] && return $ret
     done
 
