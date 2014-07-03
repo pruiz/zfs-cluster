@@ -3,7 +3,7 @@
 %{!?buildno:	%define buildno 1}
 
 Name:           zfs-cluster
-Version:        %{srcrev}
+Version:        %{srcver}
 Release:        %{buildno}.%{srcrev}
 Summary:        RedHat Cluster Suite's ZFS Resource Agents & Tools
 Group:          System Environment/Base
