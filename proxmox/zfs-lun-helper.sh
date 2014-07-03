@@ -49,6 +49,11 @@ get_lun_number() {
     return 0
 }
 
+resize_lun() {
+    "$HELPER" reshare-lun "--cdir=$CFGDIR" "--target=${PMXCFG_target}" "--device=$1" > /dev/null 
+    return $?
+}
+
 # Backwards compat..
 
 if [ -z "${PMXCFG_target}" ]
@@ -71,13 +76,13 @@ case "$1" in
   create-lun) shift; create_lun $@;;
   delete-lun) shift; delete_lun $@;;
   list-lun) shift; get_lun_uuid $@;;
-  list-view) shift; get_lun_number $@;; 
+  list-view) shift; get_lun_number $@;;
   add-view)
 	## Do nothing..
 	;;
+  resize-lu) shift; resize_lun $@;;
   *)
-        ocf_log err "Invalid command: $COMMAND"
-        #echo "Invalid command: $COMMAND" 1>&2
+        ocf_log err "Invalid command: $1"
         exit 255
         ;;
 esac

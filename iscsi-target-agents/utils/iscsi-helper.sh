@@ -166,7 +166,7 @@ del_lun() {
         exit $OCF_ERR_GENERIC
     fi
 
-    for var in cdir target device; 
+    for var in cdir target; 
     do \
         if [ -z "${!var}" ]; then
             ocf_log err "$FUNCNAME: Missing required argument: --${var}"
@@ -292,7 +292,7 @@ get_lun() {
         esac
     done
 
-    for var in cdir target device target; 
+    for var in cdir target; 
     do \
         if [ -z "${!var}" ]; then
             ocf_log err "$FUNCNAME: Missing required argument: --${var}"
@@ -304,14 +304,6 @@ get_lun() {
         ocf_log err "$FUNCNAME: Specifying both 'device' and 'uuid' not allowed."
         exit $OCF_ERR_GENERIC
     fi
-
-    for var in cdir target device; 
-    do \
-        if [ -z "${!var}" ]; then
-            ocf_log err "$FUNCNAME: Missing required argument: --${var}"
-            exit $OCF_ERR_GENERIC
-        fi
-    done
 
     declare tdir="${cdir}/${target}"
     if [ ! -d "${tdir}" ]; then
@@ -349,6 +341,79 @@ get_lun() {
     return $OCF_SUCCESS
 }
 
+reshare_lun() {
+    declare cdir=
+    declare target=
+    declare device=
+    declare uuid=
+    declare ARGS=$(getopt --long "cdir:,target:,device:,uuid:" -- "$@")
+    declare rc=$OCF_SUCCESS
+
+    eval set -- "$ARGS";
+    while true; do 
+        case "$1" in
+            --cdir) cdir=$2; shift 2;;
+            --target) target=$2; shift 2;;
+            --device) device=$2; shift 2;;
+            --uuid) uuid=$2; shift 2;;
+            --) break ;;
+            *) 
+                ocf_log err "Invalid option: $1"
+                exit $OCF_ERR_GENERIC
+                ;;
+        esac
+    done
+
+    if [ ! -z "${device}" -a ! -z "${uuid}" ]; then
+        ocf_log err "$FUNCNAME: Specifying both 'device' and 'uuid' not allowed."
+        exit $OCF_ERR_GENERIC
+    fi
+
+    for var in cdir target; 
+    do \
+        if [ -z "${!var}" ]; then
+            ocf_log err "$FUNCNAME: Missing required argument: --${var}"
+            exit $OCF_ERR_GENERIC
+        fi
+    done
+
+    declare tdir="${cdir}/${target}"
+    if [ ! -d "${tdir}" ]; then
+        ocf_log err "$FUNCNAME: No such target found: ${target}"
+        exit $OCF_ERR_CONFIGURED
+    fi
+
+    declare lunfile=
+    
+    if [ ! -z "${device}" ]; then 
+        lunfile=$(grep -l "${device}" "${tdir}"/LUN-* 2>/dev/null)
+    elif [ ! -z "${uuid}" ]; then
+        lunfile=$(grep -l "${uuid}" "${tdir}"/LUN-* 2>/dev/null)
+    else
+        ocf_log err "$FUNCNAME: Missing 'device' or 'uuid' argument."
+        exit $OCF_ERR_GENERIC
+    fi
+
+    if [ -z "${lunfile}" ]; then
+        ocf_log err "$FUNCNAME: No LUN found for: ${device}${uuid}"
+        exit $OCF_ERR_CONFIGURED
+    fi
+
+    iscsi_validate_config "${lunfile}" "${target}"; rc=$?
+    [ $rc -ne $OCF_SUCCESS ] && return $rc
+
+    iscsi_lun_status "${lunfile}" "${ENGINE}" "${target}"; rc=$?
+    if [ $rc -eq $OCF_SUCCESS ]; then
+        ## Lun is being shared, remove it first.
+        iscsi_stop_lun "${lunfile}" "${ENGINE}"; rc=$?
+        [ $rc -ne $OCF_SUCCESS ] && return $rc
+    fi
+
+    iscsi_start_lun "${lunfile}" "${ENGINE}"; rc=$?
+
+    return $rc
+}
+
 
 ###### Main ######
 
@@ -376,9 +441,11 @@ case "$1" in
   get-lun)
     get_lun $@
     ;;
+  reshare-lun)
+    reshare_lun $@
+    ;;
   *)
-    ocf_log err "Invalid command: $COMMAND"
-    #echo "Invalid command: $COMMAND" 1>&2
+    ocf_log err "Invalid command: $1"
     exit 255
     ;;
 esac
