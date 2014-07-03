@@ -1,9 +1,10 @@
+%{!?srcver:	%define srcver 1.0}
 %{!?srcrev:	%define srcrev master}
 %{!?buildno:	%define buildno 1}
 
 Name:           zfs-cluster
-Version:        1.0.%{srcrev}
-Release:        %{buildno}%{?dist}
+Version:        %{srcrev}
+Release:        %{buildno}.%{srcrev}
 Summary:        RedHat Cluster Suite's ZFS Resource Agents & Tools
 Group:          System Environment/Base
 License:        GPL
