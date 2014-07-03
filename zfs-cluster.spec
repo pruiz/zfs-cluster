@@ -4,7 +4,7 @@
 
 Name:           zfs-cluster
 Version:        %{srcver}
-Release:        %{buildno}.%{srcrev}
+Release:        %{buildno}.%{srcrev}%{?dist}
 Summary:        RedHat Cluster Suite's ZFS Resource Agents & Tools
 Group:          System Environment/Base
 License:        GPL
