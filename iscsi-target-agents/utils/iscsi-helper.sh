@@ -183,9 +183,9 @@ del_lun() {
     declare lunfile=
     
     if [ ! -z "${device}" ]; then 
-        lunfile=$(grep -l "${device}" "${tdir}"/LUN-* 2>/dev/null)
+        lunfile=$(grep -l "^DEVICE=${device}$" "${tdir}"/LUN-* 2>/dev/null)
     elif [ ! -z "${uuid}" ]; then
-        lunfile=$(grep -l "${uuid}" "${tdir}"/LUN-* 2>/dev/null)
+        lunfile=$(grep -l "^UUID=${uuid}$" "${tdir}"/LUN-* 2>/dev/null)
     else
         ocf_log err "$FUNCNAME: Missing 'device' or 'uuid' argument."
         exit $OCF_ERR_GENERIC
@@ -200,7 +200,9 @@ del_lun() {
     [ $rc -ne $OCF_SUCCESS ] && return $rc
 
     iscsi_lun_status "${lunfile}" "${ENGINE}" "${target}"; rc=$?
+    ocf_log info "LUN status: $rc"
     if [ $rc -eq $OCF_SUCCESS ]; then
+	ocf_log info "LUN is active, stopping it first.."
         ## Lun is being shared, remove it first.
         iscsi_stop_lun "${lunfile}" "${ENGINE}"; rc=$?
         [ $rc -ne $OCF_SUCCESS ] && return $rc
@@ -249,7 +251,7 @@ get_uuid() {
         exit $OCF_ERR_CONFIGURED
     fi
 
-    declare lunfile=$(grep -l "${device}" "${tdir}"/LUN-* 2>/dev/null)
+    declare lunfile=$(grep -l "^DEVICE=${device}$" "${tdir}"/LUN-* 2>/dev/null)
     if [ -z "${lunfile}" ]; then
         ocf_log err "$FUNCNAME: No LUN found for: ${device}"
         exit $OCF_ERR_CONFIGURED
@@ -314,9 +316,9 @@ get_lun() {
     declare lunfile=
     
     if [ ! -z "${device}" ]; then 
-        lunfile=$(grep -l "${device}" "${tdir}"/LUN-* 2>/dev/null)
+        lunfile=$(grep -l "^DEVICE=${device}$" "${tdir}"/LUN-* 2>/dev/null)
     elif [ ! -z "${uuid}" ]; then
-        lunfile=$(grep -l "${uuid}" "${tdir}"/LUN-* 2>/dev/null)
+        lunfile=$(grep -l "^UUID=${uuid}$" "${tdir}"/LUN-* 2>/dev/null)
     else
         ocf_log err "$FUNCNAME: Missing 'device' or 'uuid' argument."
         exit $OCF_ERR_GENERIC
@@ -386,9 +388,9 @@ reshare_lun() {
     declare lunfile=
     
     if [ ! -z "${device}" ]; then 
-        lunfile=$(grep -l "${device}" "${tdir}"/LUN-* 2>/dev/null)
+        lunfile=$(grep -l "^DEVICE=${device}$" "${tdir}"/LUN-* 2>/dev/null)
     elif [ ! -z "${uuid}" ]; then
-        lunfile=$(grep -l "${uuid}" "${tdir}"/LUN-* 2>/dev/null)
+        lunfile=$(grep -l "^UUID${uuid}$" "${tdir}"/LUN-* 2>/dev/null)
     else
         ocf_log err "$FUNCNAME: Missing 'device' or 'uuid' argument."
         exit $OCF_ERR_GENERIC
