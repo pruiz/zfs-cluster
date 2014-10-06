@@ -276,7 +276,7 @@ get_lun() {
     declare target=
     declare device=
     declare uuid=
-    declare ARGS=$(getopt --long "cdir:,target:,device:" -- "$@")
+    declare ARGS=$(getopt --long "cdir:,target:,device:,uuid:" -- "$@")
     declare rc=$OCF_SUCCESS
 
     eval set -- "$ARGS";

@@ -41,7 +41,7 @@ get_lun_uuid() {
 }
 
 get_lun_number() {
-    declare OUTPUT=$("$HELPER" get-lun "--cdir=$CFGDIR" "--target=${PMXCFG_target}" "--device=$1"|grep 'LUN: ')
+    declare OUTPUT=$("$HELPER" get-lun "--cdir=$CFGDIR" "--target=${PMXCFG_target}" "--uuid=$1"|grep 'LUN: ')
     [ $? -ne 0 ] && exit $?
     declare LUN=$(echo "$OUTPUT"|sed -e 's,^LUN: ,,g')
     [ -z "$LUN" ] && exit 255
