@@ -27,7 +27,7 @@ create_lun() {
 }
 
 delete_lun() {
-    "$HELPER" del-lun "--cdir=$CFGDIR" "--target=${PMXCFG_target}" "--device=$1" > /dev/null 
+    "$HELPER" del-lun "--cdir=$CFGDIR" "--target=${PMXCFG_target}" "--uuid=$1" > /dev/null 
     return $?
 }
 
