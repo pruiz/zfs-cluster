@@ -50,7 +50,7 @@ get_lun_number() {
 }
 
 resize_lun() {
-    "$HELPER" reshare-lun "--cdir=$CFGDIR" "--target=${PMXCFG_target}" "--device=$1" > /dev/null 
+    "$HELPER" reshare-lun "--cdir=$CFGDIR" "--target=${PMXCFG_target}" "--uuid=$1" > /dev/null 
     return $?
 }
 
