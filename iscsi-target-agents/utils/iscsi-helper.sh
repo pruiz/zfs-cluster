@@ -390,7 +390,7 @@ reshare_lun() {
     if [ ! -z "${device}" ]; then 
         lunfile=$(grep -l "^DEVICE=${device}$" "${tdir}"/LUN-* 2>/dev/null)
     elif [ ! -z "${uuid}" ]; then
-        lunfile=$(grep -l "^UUID${uuid}$" "${tdir}"/LUN-* 2>/dev/null)
+        lunfile=$(grep -l "^UUID=${uuid}$" "${tdir}"/LUN-* 2>/dev/null)
     else
         ocf_log err "$FUNCNAME: Missing 'device' or 'uuid' argument."
         exit $OCF_ERR_GENERIC
