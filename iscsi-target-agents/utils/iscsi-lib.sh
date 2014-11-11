@@ -308,13 +308,13 @@ __iscsi_lun_status() {
 	iet)
             # FIXME: this looks for a matching LUN and path, but does
             # not actually test for the correct target ID.
-            grep -E -q "[[:space:]]+lun:${LUN}.*path:${DEVICE}" /proc/net/iet/volume && return $OCF_SUCCESS
+            grep -E -q "[[:space:]]+lun:${LUN}.*path:${DEVICE}$" /proc/net/iet/volume && return $OCF_SUCCESS
 	    ;;
 	tgt)
             # This only looks for the backing store, but does not test
             # for the correct target ID and LUN.
             tgtadm --lld iscsi --op show --mode target \
-                | grep -E -q "[[:space:]]+Backing store.*: ${DEVICE}" && return $OCF_SUCCESS
+                | grep -E -q "[[:space:]]+Backing store.*: ${DEVICE}$" && return $OCF_SUCCESS
             ;;
 	lio)
             configfs_path="/sys/kernel/config/target/iscsi/${TARGET}/tpgt_1/lun/lun_${LUN}/${OCF_RESOURCE_INSTANCE}/udev_path"
