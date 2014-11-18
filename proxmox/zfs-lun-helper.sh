@@ -70,6 +70,7 @@ case "$1" in
   create-lu) shift; create_lun $@;;
   delete-lu) shift; delete_lun $@;;
   share-lu) ;; # Do nothing.
+  import-lu) shift; create_lun $@;;
   get-lu-id) shift; get_lun_uuid $@;;
   get-lu-no) shift; get_lun_number $@;;
 
