@@ -339,7 +339,8 @@ __iscsi_add_lun() {
     declare scsi_id=$7
     declare scsi_sn=$8
     declare bstype=$9
-    declare EXTRAPARAMS="${10}"
+    declare bsoflags=${10}
+    declare EXTRAPARAMS="${11}"
     declare TID=$(iscsi_get_tid "${ENGINE}" "${TARGET}")
     declare rc=$OCF_SUCCESS
 
@@ -401,7 +402,6 @@ __iscsi_add_lun() {
 	    # tgt requires that we create the LU first, then set LU
 	    # parameters
 	    params=""
-	    bstype=""
 	    local var
             local envar
 	    for var in scsi_id scsi_sn vendir_id product_id; do
@@ -414,10 +414,14 @@ __iscsi_add_lun() {
 	    if [ -n "$bstype" ]; then
 		bstype="--bstype=${bstype}"
 	    fi
+            if [ -n "$bsoflags" ]; then
+		bsoflags="--bsoflags=${bsoflags}"
+            fi  
+	    ocf_log info "Starting LUN: ${LUN} (@${TID}) using ${DEVICE} as ${bstype} ${bsoflags} (extra: ${params})\n"
 	    ocf_run tgtadm --lld iscsi --op new --mode logicalunit \
 		--tid=${TID} \
 		--lun=${LUN} \
-	    	--backing-store ${DEVICE} ${bstype} || exit $OCF_ERR_GENERIC
+	    	--backing-store ${DEVICE} ${bstype} ${bsoflags} || exit $OCF_ERR_GENERIC
 	    if [ -z "$params" ]; then
 		return $OCF_SUCCESS
 	    else
@@ -554,7 +558,7 @@ iscsi_start_lun() {
 
     eval $(__source_config "${CONFIGFILE}")
     __iscsi_add_lun "${engine}" "${TARGET}" "${LUN}" "${DEVICE}" \
-                    "${VENDOR}" "${PRODUCT}" "${SCSIID}" "${SCSISN}" "${BSTYPE}" \
+                    "${VENDOR}" "${PRODUCT}" "${SCSIID}" "${SCSISN}" "${BSTYPE}" "${BSOFLAGS}" \
                     "${EXTRAPARAMS}"
     return $?
 }
