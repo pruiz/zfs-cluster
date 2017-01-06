@@ -6,9 +6,9 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin
 export LC_ALL LANG PATH
 
 CFGDIR=$(dirname $0)
-HELPER=/usr/share/cluster/utils/iscsi-helper.sh
+HELPER=/usr/lib/ocf/lib/netway/iscsi-helper.sh
 
-. /usr/share/cluster/ocf-shellfuncs
+. /usr/lib/ocf/lib/heartbeat/ocf-shellfuncs
 
 dump_variables() {
     for i in $(set |grep PMX | grep -v 'grep PMX')

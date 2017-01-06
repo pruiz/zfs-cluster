@@ -5,8 +5,8 @@ LANG=C
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 export LC_ALL LANG PATH
 
-. /usr/share/cluster/ocf-shellfuncs
-. /usr/share/cluster/utils/iscsi-lib.sh
+. /usr/lib/ocf/lib/heartbeat/ocf-shellfuncs
+. /usr/lib/ocf/lib/netway/iscsi-lib.sh
 
 dump_variables() {
     for i in $(set |grep PMX | grep -v 'grep PMX')

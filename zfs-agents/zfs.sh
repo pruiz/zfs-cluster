@@ -25,15 +25,9 @@ LANG=C
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 export LC_ALL LANG PATH
 
-if [ -f "$(dirname $0)/ocf-shellfuncs" ]
-then \
-    . $(dirname $0)/ocf-shellfuncs
-    : ${HELPERS_DIR=$(dirname $0)/zfs.d}
-else
-    : ${OCF_FUNCTIONS_DIR=${OCF_ROOT}/lib/heartbeat}
-    . ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
-    : ${HELPERS_DIR=${OCF_ROOT}/lib/heartbeat/zfs.d}
-fi
+: ${OCF_FUNCTIONS_DIR=${OCF_ROOT}/lib/heartbeat}
+. ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
+: ${HELPERS_DIR=/usr/share/cluster/zfs.d}
 
 USAGE="usage: $0 {start|stop|status|monitor|validate-all|meta-data}";
 

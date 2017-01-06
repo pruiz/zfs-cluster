@@ -25,6 +25,8 @@
 # Inc., 59 Temple Place - Suite 330, Boston MA 02111-1307, USA.
 #
 
+# Modified in order to work with zfs-agents by <pablo.ruiz@gmail.com>
+
 #######################################################################
 # Initialization:
 LC_ALL=C
@@ -32,15 +34,12 @@ LANG=C
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 export LC_ALL LANG PATH
 
-if [ -f "$(dirname $0)/ocf-shellfuncs" ]
-then \
-    . $(dirname $0)/ocf-shellfuncs
-    . $(dirname $0)/utils/iscsi-lib.sh
-    HA_RSCTMP=/var/run
-else
-    : ${OCF_FUNCTIONS_DIR=${OCF_ROOT}/lib/heartbeat}
-    . ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
-fi
+: ${OCF_FUNCTIONS_DIR=${OCF_ROOT}/lib/heartbeat}
+. ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
+: ${THIS_FUNCTIONS_DIR=${OCF_ROOT}/lib/netway}
+. ${THIS_FUNCTIONS_DIR}/iscsi-lib.sh
+
+HA_RSCTMP=/var/run
 
 # Defaults
 # Set a default implementation based on software installed
