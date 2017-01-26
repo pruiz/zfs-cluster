@@ -3,10 +3,9 @@
 # Support:      linux-ha@lists.linux-ha.org
 # License:      GNU General Public License (GPL)
 # 
-# Filesystem
-#      Description: Manages a Filesystem on a shared storage medium.
-#  Original Author: Eric Z. Ayers (eric.ayers@compgen.com)
-# Original Release: 25 Oct 2000
+# zfs-dataset
+#      Description: Manages a mount/umount of a ZFS dataset. This is an enhanced Filesystem resource, supporting ZFS datasets.
+#  	    Author: Pablo Ruiz <pablo.ruiz@gmail.com> (Original fs resource by: Eric Z. Ayers (eric.ayers@compgen.com))
 #
 # usage: ./Filesystem {start|stop|status|monitor|validate-all|meta-data}
 #
@@ -275,7 +274,7 @@ determine_blockdevice() {
 	# Get the current real device name, if possible.
 	# (specified devname could be -L or -U...)
 	case "$FSTYPE" in
-	nfs4|nfs|smbfs|cifs|glusterfs|ceph|tmpfs|none)
+	zfs|nfs4|nfs|smbfs|cifs|glusterfs|ceph|tmpfs|none)
 		: ;;
 	*)
 		DEVICE=`list_mounts | grep " $MOUNTPOINT " | cut -d' ' -f1`
@@ -458,7 +457,7 @@ is_fsck_needed() {
 		no)    false;;
 		""|auto)
 		case $FSTYPE in
-			ext4|ext4dev|ext3|reiserfs|reiser4|nss|xfs|jfs|vfat|fat|nfs4|nfs|cifs|smbfs|ocfs2|gfs2|none|lustre|glusterfs|ceph|tmpfs)
+			zfs|ext4|ext4dev|ext3|reiserfs|reiser4|nss|xfs|jfs|vfat|fat|nfs4|nfs|cifs|smbfs|ocfs2|gfs2|none|lustre|glusterfs|ceph|tmpfs)
 			false;;
 			*)
 			true;;
@@ -1039,7 +1038,7 @@ set_blockdevice_var() {
 
 	# these are definitely not block devices
 	case $FSTYPE in
-	nfs4|nfs|smbfs|cifs|none|glusterfs|ceph) return;;
+	zfs|nfs4|nfs|smbfs|cifs|none|glusterfs|ceph) return;;
 	esac
 
 	if `is_option "loop"`; then
@@ -1162,7 +1161,7 @@ nfs4|nfs|smbfs|cifs|none|gfs2|glusterfs|ceph)
 # add here CLUSTERSAFE=0 for all filesystems which are not
 # cluster aware and which, even if when mounted read-only,
 # could still modify parts of it such as journal/metadata
-ext4|ext4dev|ext3|reiserfs|reiser4|xfs|jfs)
+ext4|ext4dev|ext3|reiserfs|reiser4|xfs|jfs|zfs)
 	if ocf_is_true "$OCF_RESKEY_force_clones"; then
 		CLUSTERSAFE=2
 	else
