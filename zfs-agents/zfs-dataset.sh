@@ -7,7 +7,7 @@
 #      Description: Manages a mount/umount of a ZFS dataset. This is an enhanced Filesystem resource, supporting ZFS datasets.
 #  	    Author: Pablo Ruiz <pablo.ruiz@gmail.com> (Original fs resource by: Eric Z. Ayers (eric.ayers@compgen.com))
 #
-# usage: ./Filesystem {start|stop|status|monitor|validate-all|meta-data}
+# usage: ./zfs-dataset {start|stop|status|monitor|validate-all|meta-data}
 #
 #	OCF parameters are as below:
 #		OCF_RESKEY_device
@@ -57,7 +57,7 @@
 . ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
 
 # Defaults
-DFLT_STATUSDIR=".Filesystem_status/"
+DFLT_STATUSDIR=".zfs-dataset_status/"
 
 # Variables used by multiple methods
 HOSTOS=`uname`
@@ -84,12 +84,12 @@ meta_data() {
 	cat <<END
 <?xml version="1.0"?>
 <!DOCTYPE resource-agent SYSTEM "ra-api-1.dtd">
-<resource-agent name="Filesystem">
+<resource-agent name="zfs-dataset">
 <version>1.1</version>
 
 <longdesc lang="en">
-Resource script for Filesystem. It manages a Filesystem on a
-shared storage medium. 
+Resource script for zfs-datsets. It manages legacy mount/umount of
+zfs-datasets.
 
 The standard monitor operation of depth 0 (also known as probe)
 checks if the filesystem is mounted. If you want deeper tests,
@@ -110,7 +110,7 @@ read-only monitoring (depth=10), export with "no_root_squash" on
 your NFS server, or grant world write permissions on the
 directory where the status file is to be placed.
 </longdesc>
-<shortdesc lang="en">Manages filesystem mounts</shortdesc>
+<shortdesc lang="en">Manages legacy mounting of ZFS filesystem/datasets</shortdesc>
 
 <parameters>
 <parameter name="device" required="1">

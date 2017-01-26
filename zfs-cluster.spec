@@ -40,6 +40,7 @@ install -d "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}"
 install -d "%{buildroot}%{_datadir}/cluster/zfs.d"
 
 install -m 755 zfs-agents/zfs.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}/zfs"
+install -m 755 zfs-agents/zfs-dataset.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}/zfs-dataset"
 install -m 755 zfs-agents/zfs-share.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}/"
 
 install -m 755 iscsi-target-agents/utils/iscsi-lib.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}/"
@@ -62,6 +63,7 @@ RedHat Cluster Suite's ZFS Resource Agents & Tools
 %defattr(-,root,root,-)
 %dir %{_datadir}/cluster/zfs.d
 %attr(755,root,root) %{_libdir}/ocf/resource.d/%{_provider}/zfs
+%attr(755,root,root) %{_libdir}/ocf/resource.d/%{_provider}/zfs-dataset
 %attr(755,root,root) %{_libdir}/ocf/lib/%{_provider}/zfs-share.sh
 
 %package -n iscsi-target-agents
