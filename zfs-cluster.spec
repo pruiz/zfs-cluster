@@ -4,6 +4,12 @@
 
 %define _provider netway
 
+%if 0%{?fedora} || 0%{?centos_version} || 0%{?rhel}
+## OCF resource scripts are arch-independent.
+%global _libdir /usr/lib
+%endif
+
+
 Name:           zfs-cluster
 Version:        %{srcver}
 Release:        %{buildno}.%{srcrev}%{?dist}
@@ -33,14 +39,14 @@ install -d "%{buildroot}%{_libdir}/ocf/lib/%{_provider}"
 install -d "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}"
 install -d "%{buildroot}%{_datadir}/cluster/zfs.d"
 
-install -m 755 zfs-agents/zfs.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}"
-install -m 755 zfs-agents/zfs-share.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}"
+install -m 755 zfs-agents/zfs.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}/zfs"
+install -m 755 zfs-agents/zfs-share.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}/"
 
-install -m 755 iscsi-target-agents/utils/iscsi-lib.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}"
-install -m 755 iscsi-target-agents/utils/iscsi-helper.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}"
-install -m 755 iscsi-target-agents/iscsi-lun.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}"
-install -m 755 iscsi-target-agents/iscsi-luns.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}"
-install -m 755 iscsi-target-agents/iscsi-target.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}"
+install -m 755 iscsi-target-agents/utils/iscsi-lib.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}/"
+install -m 755 iscsi-target-agents/utils/iscsi-helper.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}/"
+install -m 755 iscsi-target-agents/iscsi-lun.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}/"
+install -m 755 iscsi-target-agents/iscsi-luns.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}/"
+install -m 755 iscsi-target-agents/iscsi-target.sh "%{buildroot}%{_libdir}/ocf/resource.d/%{_provider}/"
 install -m 755 proxmox/zfs-lun-helper.sh "%{buildroot}%{_libdir}/ocf/lib/%{_provider}/proxmox-zfs-helper.sh"
 
 %clean
@@ -55,8 +61,8 @@ RedHat Cluster Suite's ZFS Resource Agents & Tools
 %files -n zfs-agents
 %defattr(-,root,root,-)
 %dir %{_datadir}/cluster/zfs.d
+%attr(755,root,root) %{_libdir}/ocf/resource.d/%{_provider}/zfs
 %attr(755,root,root) %{_libdir}/ocf/lib/%{_provider}/zfs-share.sh
-%attr(755,root,root) %{_libdir}/ocf/resource.d/%{_provider}/zfs.sh
 
 %package -n iscsi-target-agents
 Summary:	RedHat Cluster Suite's (dynamic) iSCSI Resource Agentes & Tools
