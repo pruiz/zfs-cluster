@@ -76,13 +76,15 @@ END
 
 zfs_helpers () {
     if [ -d "${HELPERS_DIR}" ]; then
-        for helper in "${HELPERS_DIR}"/*.sh; do
+        shopt -s nullglob
+        for helper in " ${HELPERS_DIR}"/*.sh; do
             ocf_log debug "Invoking helper: ${helper} $@"
             CMDOUT="$(("${helper}" $@) 2>&1)"
             if [ "$?" -eq "0" ] ; then ocf_log debug "Helper done"
             else ocf_log err "Helper ${helper} failed: ${CMDOUT}"
             fi
         done
+        shopt -u nullglob
     fi
 }
 
