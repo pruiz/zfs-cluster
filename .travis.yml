@@ -1,0 +1,19 @@
+sudo: required
+
+services:
+  - docker
+
+env:
+  - PKGVER=1.$TRAVIS_JOB_NUMBER
+  - GITREV=${TRAVIS_COMMIT:0:10}
+  - BUILDNO=1
+
+before_install:
+  - docker --version
+  - docker pull mmornati/mock-rpmbuilder
+
+script:
+  - mkdir .build
+  - cp zfs-cluster.spec .build
+  - tar --exclude=.build -cvzf .build/zfs-cluster-${GITREV}.tar.gz *
+  - docker run  --net=host -v $(pwd)/.build:/rpmbuild --cap-add=SYS_ADMIN  -e NO_CLEANUP=true -e MOCK_CONFIG=epel-7-x86_64 -e MOCK_DEFINES="srcver=$PKGVER srcrev=$GITVER buildno=$BUILDNO" -e SOURCES=zfs-cluster-$GITREV.tar.gz -e SPEC_FILE=zfs-cluster.spec mmornati/mock-rpmbuilder
